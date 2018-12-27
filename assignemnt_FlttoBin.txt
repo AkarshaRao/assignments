@@ -1,0 +1,86 @@
+using System;
+public class Assignment
+{
+	public static void Main()
+	{
+		double a, b;
+		int[] a_IntegerBinary = new int[7];						//to store the binary value of intergral value of a
+		int[] a_FractionalBinary= new int[7];					//to store the binary value of fractional value of a
+		int[] b_IntegerBinary= new int[7];						//to store the binary value of intergral value of a
+		int[] b_FractionalBinary = new int[7];					//to store the binary value of fractional value of a								
+		Console.Write("enter float 1(range o to 127.999):");
+		a = double.Parse(Console.ReadLine());
+		Console.Write("enter float 2(range 0 to 127.999):");
+		b = double.Parse(Console.ReadLine());
+		a_IntegerBinary  =IntergerPartToBinary(a);
+		b_IntegerBinary  =IntergerPartToBinary(b);
+		a_FractionalBinary =FractionPartToBinary(a);
+		b_FractionalBinary =FractionPartToBinary(b);
+		Console.WriteLine("---------------------------------------- ");
+		AddBinary_Result(a_IntegerBinary, a_FractionalBinary, b_IntegerBinary, b_FractionalBinary);
+	}
+	public static int[] IntergerPartToBinary(double y)
+	{
+		int x,remainder, k=6;
+		x = (int)y;			//getting integer part of number
+		int[] r = new int[7];
+		while (x != 0 || k >= 0)
+		{
+			if (x != 0)
+			{
+				remainder = x % 2;
+				x = x / 2;
+				r[k] = remainder;
+			}
+			else
+			{
+				r[k] = 0;
+			}
+			k = k - 1;
+		}
+		return r;		//returning the integral part equvivalent binary code
+	}
+	public static int[] FractionPartToBinary(double y)
+	{
+		float x;
+		x = (float)y - (int)y; 		//getting fractional part of number
+		int p, i;
+		int[] m = new int[7];
+		for (i = 0; i < 7; i++)
+		{
+			x = x * 2;
+			p = (int)x;
+			m[i] = p;
+			x = x - p;
+		}
+		return m;		//returning the fractional part equvivalent binary code
+	}
+	public static void AddBinary_Result(int[] i1, int[] f1, int[] i2, int[] f2)
+	{
+		int[] r = new int[15];
+		int k = 0, i,c = 0;
+		for (i = 6; i >= 0; i--)
+		{
+			r[k] = f1[i] ^ f2[i] ^ c;		//Adding the fractional part using Bitwise XOR operator (Full Adder)
+			c = (f1[i] & f2[i]) | (f2[i] & c) | (c & f1[i]);		//Carry
+			k = k + 1;
+		}
+		for (i = 6; i >= 0; i--)
+		{
+			r[k] = i1[i] ^ i2[i] ^ c;		//Adding the integral part using Bitwise XOR operator (Full Adder)
+			c = (i1[i] & i2[i]) | (i2[i] & c) | (c & i1[i]);		//carry
+			k = k + 1;
+		}
+		r[k] = c;							//Assigning carry to the Most Significant Bit
+		for (i = 14; i >= 7; i--)
+		{
+			Console.Write(r[i] + " ");
+		}
+		Console.Write(".");
+		for (i = 6; i >= 0; i--)
+		{	
+			Console.Write(r[i] + " ");
+		}
+		return ;
+	}
+}
